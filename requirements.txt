@@ -1,0 +1,9 @@
+fastmcp>=2.10.4
+mcp>=1.10.1
+mcp-client>=0.0.0
+mcp-server>=0.1.4
+mcp[cli]>=1.9.4
+openai>=1.93.3
+openai-agents>=0.1.0
+python-dotenv>=1.1.1
+youtube-transcript-api>=1.1.1

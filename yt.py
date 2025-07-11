@@ -42,41 +42,29 @@ def yt_library() -> str:
 @mcp.tool()
 async def fetch_youtube_transcript(url: str) -> str:
     """
-    Extract transcript with timestamps from a YouTube video URL and format it for LLM consumption
-    
+    Extract transcript with timestamps from a YouTube video URL and format it for LLM consumption.
+
     Args:
-        url (str): YouTube video URL
-        
+        url (str): The YouTube video URL to fetch the transcript for.
     Returns:
         str: Formatted transcript with timestamps, where each entry is on a new line
              in the format: "[MM:SS] Text"
     """
-    # Extract video ID from URL
     video_id_pattern = r'(?:v=|\\/)([0-9A-Za-z_-]{11}).*'
     video_id_match = re.search(video_id_pattern, url)
-    
     if not video_id_match:
         raise ValueError("Invalid YouTube URL")
-    
     video_id = video_id_match.group(1)
-    
     try:
         transcript = YouTubeTranscriptApi.get_transcript(video_id)
-        
-        # Format each entry with timestamp and text
         formatted_entries = []
         for entry in transcript:
-            # Convert seconds to MM:SS format
             minutes = int(entry['start'] // 60)
             seconds = int(entry['start'] % 60)
             timestamp = f"[{minutes:02d}:{seconds:02d}]"
-            
             formatted_entry = f"{timestamp} {entry['text']}"
             formatted_entries.append(formatted_entry)
-        
-        # Join all entries with newlines
-        return "\\n".join(formatted_entries)
-    
+        return "\n".join(formatted_entries)
     except Exception as e:
         raise Exception(f"Error fetching transcript: {str(e)}")
 

@@ -1,6 +1,6 @@
 # MCP Server Demo: YouTube Transcript & SQLite DB
 
-This project demonstrates how an MCP (Model Context Protocol) server can inject functionality into an application without requiring the app to take any dependencies on the resource type. It provides two example MCP servers:
+This project demonstrates how an MCP (Model Context Protocol) server can inject functionality into an application without requiring the app to take any dependencies on the resource type. It provides two example MCP servers and a sample OpenAI MCP client.
 
 ## 1. YouTube Transcript Extraction (`yt.py`)
 
@@ -19,18 +19,29 @@ This project demonstrates how an MCP (Model Context Protocol) server can inject 
 - **Features:**
   - List all artists and genres.
   - Run arbitrary `SELECT` SQL queries (read-only).
-  - Get all tracks for a given artist name (using a prompt-generated SQL statement).
+  - Get all tracks for a given artist (using a prompt-generated SQL statement).
+  - Get artist info (using the argument `name`).
 - **Usage:**
   - Ensure `chinook.db` is present in the project directory.
   - Run the server: `uv run mcp dev sqlite_server.py`
-  - Use the provided tools to query artists, genres, or tracks.
+  - Use the provided tools to query artists, genres, or tracks. For artist info and tracks, use the argument `name` (not `artist_name`).
+
+## 3. OpenAI MCP Client (`client.py`)
+
+- **Purpose:** Allows conversational interaction with both MCP servers via OpenAI, using tool schemas for argument validation.
+- **Usage:**
+  - Configure your `.env` file (see below).
+  - Run: `python client.py`
+  - Type prompts such as: `get me info about the artist "AC/DC" from sqlite`
 
 ## Project Structure
 
 - `yt.py` — YouTube transcript MCP server
 - `sqlite_server.py` — SQLite Chinook DB MCP server
+- `client.py` — OpenAI MCP client for both servers
 - `chinook.db` — SQLite database file
 - `pyproject.toml` — Project dependencies
+- `.env.example` — Example environment configuration
 
 ## Requirements
 
@@ -41,6 +52,20 @@ This project demonstrates how an MCP (Model Context Protocol) server can inject 
   # or, if using pyproject.toml:
   uv pip install .
   ```
+
+## Environment Setup
+
+Copy `.env.example` to `.env` and fill in the required values:
+
+```
+AZURE_OPENAI_ENDPOINT=...
+AZURE_OPENAI_KEY=...
+AZURE_OPENAI_DEPLOYMENT=...
+SQLITE_MCP_URL=http://localhost:8001
+YT_MCP_URL=http://localhost:8002
+```
+
+- Make sure both MCP servers are running and accessible at the URLs above.
 
 ## Notes
 - This project is for demonstration purposes and is not production-hardened.

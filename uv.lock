@@ -807,6 +807,7 @@ dependencies = [
     { name = "fastmcp" },
     { name = "mcp", extra = ["cli"] },
     { name = "openai" },
+    { name = "python-dotenv" },
     { name = "youtube-transcript-api" },
 ]
 
@@ -816,5 +817,6 @@ requires-dist = [
     { name = "mcp", specifier = ">=1.10.1" },
     { name = "mcp", extras = ["cli"], specifier = ">=1.9.4" },
     { name = "openai", specifier = ">=1.93.3" },
+    { name = "python-dotenv", specifier = ">=1.1.1" },
     { name = "youtube-transcript-api", specifier = ">=1.1.1" },
 ]

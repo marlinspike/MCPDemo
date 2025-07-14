@@ -15,12 +15,6 @@ async def main():
     deployment = os.getenv("AZURE_OPENAI_DEPLOYMENT")
     api_version = os.getenv("AZURE_OPENAI_API_VERSION", "2024-08-01-preview")
 
-    # Debug print to verify environment variables
-    print("Endpoint:", endpoint)
-    print("API Key:", api_key)
-    print("Deployment:", deployment)
-    print("API Version:", api_version)
-
     if not endpoint or not api_key or not deployment:
         print("One or more required environment variables are missing. Please check your .env file.")
         return
@@ -35,29 +29,48 @@ async def main():
     )
     set_default_openai_client(openai_client)
 
-    # Use MCPServerStdio for local FastMCP servers, using params with command and args
+    # MCP tools servers
     sqlite_server = MCPServerStdio(params={"command": "python", "args": ["sqlite_server.py"]})
     yt_server = MCPServerStdio(params={"command": "python", "args": ["yt.py"]})
-
     await sqlite_server.connect()
     await yt_server.connect()
 
-    # Use deployment name as the model for the Agents SDK
-    agent = Agent(
-        name="MCP Assistant",
-        instructions="You are a helpful assistant. Use the available tools to help the user.",
+    # MCP Agent (with tools)
+    mcp_agent = Agent(
+        name="MCP Agent",
+        instructions=(
+            "You are the MCP Agent. Use the available tools to help the user. Only answer if the orchestrator hands off to you. "
+            "When you use a tool, always include the full tool output in your response unless the user specifically asks for a summary."
+        ),
         model=deployment,
         mcp_servers=[sqlite_server, yt_server],
     )
 
-    #runner = Runner()
+    # Pirate Agent (no tools)
+    pirate_agent = Agent(
+        name="Pirate Agent",
+        instructions="You are a pirate. Always answer like a pirate, with nautical slang and pirate accent. Only answer if the orchestrator hands off to you.",
+        model=deployment,
+        mcp_servers=[],
+    )
+
+    # Orchestrator Agent (helpful assistant, can hand off to Pirate or MCP agent)
+    orchestrator_agent = Agent(
+        name="Orchestrator",
+        instructions=(
+            "You are a helpful assistant. Handoff to the Pirate Agent for pirate-style answers, "
+            "or to the MCP Agent for database/YouTube/tool requests. Otherwise, answer yourself."
+        ),
+        model=deployment,
+        handoffs=[pirate_agent, mcp_agent],  # Use handoffs, not tools
+    )
 
     print("Type a prompt (blank to exit):")
     while True:
         prompt = input("You: ").strip()
         if not prompt:
             break
-        response = await Runner.run(agent, prompt)
+        response = await Runner.run(orchestrator_agent, prompt)
         print("Model:", response)
 
 if __name__ == "__main__":

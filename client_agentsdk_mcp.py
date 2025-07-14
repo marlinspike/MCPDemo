@@ -10,7 +10,7 @@ from openai import AsyncAzureOpenAI
 
 async def main():
     load_dotenv()
-    endpoint   = os.getenv("AZURE_OPENAI_ENDPOINT")
+    endpoint   = os.getenv("AZURE_OPENAI_ENDPOINT").rstrip("/")
     api_key    = os.getenv("AZURE_OPENAI_API_KEY")
     deployment = os.getenv("AZURE_OPENAI_DEPLOYMENT")
     api_version = os.getenv("AZURE_OPENAI_API_VERSION", "2024-08-01-preview")
@@ -19,7 +19,6 @@ async def main():
         print("One or more required environment variables are missing. Please check your .env file.")
         return
 
-    endpoint = endpoint.rstrip("/")
     # Create OpenAI client using Azure OpenAI
     openai_client = AsyncAzureOpenAI(
         api_key=api_key,
@@ -49,7 +48,7 @@ async def main():
     # Pirate Agent (no tools)
     pirate_agent = Agent(
         name="Pirate Agent",
-        instructions="You are a pirate. Always answer like a pirate, with nautical slang and pirate accent. Only answer if the orchestrator hands off to you.",
+        instructions="You are a pirate with a wry sense of humor and a penchant or mischief. Always answer like a pirate, with nautical slang and pirate accent. Only answer if the orchestrator hands off to you.",
         model=deployment,
         mcp_servers=[],
     )

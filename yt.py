@@ -6,18 +6,6 @@ import re
 # Create an MCP server
 mcp = FastMCP("yt-shaw")
 
-# Create prompts
-@mcp.prompt()
-def create_chapters_instructions() -> str:
-    """Instructions for creating YouTube video chapters from a transcript."""
-    with open("prompts/create_chapters.md", "r") as file:
-        return file.read()
-
-@mcp.prompt()
-def write_blog_instructions() -> str:
-    """Instructions for writing a blog post based on a YouTube video transcript."""
-    with open("prompts/write_blog.md", "r") as file:
-        return file.read()
 
 # Create resource
 @mcp.resource("yt-library://")

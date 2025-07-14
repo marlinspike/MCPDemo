@@ -26,6 +26,8 @@ This project demonstrates how an MCP (Model Context Protocol) server can inject 
   - Run the server: `uv run mcp dev sqlite_server.py`
   - Use the provided tools to query artists, genres, or tracks. For artist info and tracks, use the argument `name` (not `artist_name`).
 
+  When you run #4 (client_agentsdk_mcp.py), you'll see that you only really need two tools, run_sql() and get_sqlite_schema(). The `run_sql()` tool allows you to execute any SQL query, while `get_sqlite_schema()` provides the schema of the Chinook database, which allows the LLM to understand the structure of the data, and construct appropriate queries! The other methods are there for show and tell, but are not strictly necessary for the client to function.
+
 ## 3. OpenAI MCP Client (`client.py`)
 
 - **Purpose:** Allows conversational interaction with both MCP servers via OpenAI, using tool schemas for argument validation.
@@ -58,7 +60,7 @@ This project demonstrates how an MCP (Model Context Protocol) server can inject 
 - `yt.py` — YouTube transcript MCP server
 - `sqlite_server.py` — SQLite Chinook DB MCP server
 - `client.py` — OpenAI MCP client for both servers
-- `client_agentsdk_mcp.py` — OpenAI MCP client with Agent SDK
+- `client_agentsdk_mcp.py` — OpenAI MCP client with OpenAI Agent SDK
 - `chinook.db` — SQLite database file
 - `pyproject.toml` — Project dependencies
 - `.env.example` — Example environment configuration

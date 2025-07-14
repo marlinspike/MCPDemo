@@ -34,11 +34,31 @@ This project demonstrates how an MCP (Model Context Protocol) server can inject 
   - Run: `python client.py`
   - Type prompts such as: `get me info about the artist "AC/DC" from sqlite`
 
+## 4. OpenAI MCP Client with Agent SDK (`client_agentsdk_mcp.py`)
+
+- **Purpose:** Provides an OpenAI MCP client using the Agent SDK, supporting multi-agent orchestration and tool usage.
+- **Features:**
+  - Uses Azure OpenAI via environment variables for endpoint, key, deployment, and API version.
+  - Launches two MCP tool servers: `sqlite_server.py` and `yt.py`.
+  - Defines three agents:
+    - **MCP Agent:** Uses both MCP tool servers for database and YouTube operations.
+    - **Pirate Agent:** Answers in pirate slang (for fun, no tools).
+    - **Orchestrator Agent:** Routes user prompts to the appropriate agent (MCP, Pirate, or itself) based on the request.
+  - Interactive prompt loop: type a prompt and get a response from the orchestrator or a specialized agent.
+- **Usage:**
+  - Configure your `.env` file as described below.
+  - Run: `python client_agentsdk_mcp.py`
+  - Type prompts such as:
+    - `get me info about the artist "AC/DC" from sqlite`
+    - `talk like a pirate`
+    - `get the transcript for https://www.youtube.com/watch?v=dQw4w9WgXcQ&list=RDdQw4w9WgXcQ&start_radio=1`
+
 ## Project Structure
 
 - `yt.py` — YouTube transcript MCP server
 - `sqlite_server.py` — SQLite Chinook DB MCP server
 - `client.py` — OpenAI MCP client for both servers
+- `client_agentsdk_mcp.py` — OpenAI MCP client with Agent SDK
 - `chinook.db` — SQLite database file
 - `pyproject.toml` — Project dependencies
 - `.env.example` — Example environment configuration

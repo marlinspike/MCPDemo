@@ -116,7 +116,6 @@ def get_sqlite_schema() -> str:
     Returns:
         str: The SQL schema as a string, or an empty string if an error occurs.
     """
-    print("Tool called: get_sqlite_schema")
     try:
         with sqlite3.connect(DB_PATH) as conn:
             with conn:  # ensure transactions are properly closed

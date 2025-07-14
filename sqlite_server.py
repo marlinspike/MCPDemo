@@ -105,6 +105,35 @@ def get_tracks_by_artist(name: str) -> List[Dict[str, Any]]:
         except Exception:
             return []
 
+
+@mcp.tool()
+def get_sqlite_schema() -> str:
+    """
+    Retrieve the full SQL schema (tables, indexes, triggers, and views) of the specified SQLite database.
+
+    This is useful for understanding the database structure and relationships, which can help in writing more accurate and effective SQL queries.
+
+    Returns:
+        str: The SQL schema as a string, or an empty string if an error occurs.
+    """
+    print("Tool called: get_sqlite_schema")
+    try:
+        with sqlite3.connect(DB_PATH) as conn:
+            with conn:  # ensure transactions are properly closed
+                cursor = conn.cursor()
+                cursor.execute("""
+                    SELECT sql FROM sqlite_master
+                    WHERE type IN ('table', 'index', 'trigger', 'view')
+                    AND sql NOT NULL
+                    ORDER BY type, name;
+                """)
+                schema_statements = [row[0] for row in cursor.fetchall()]
+                return "\n\n".join(schema_statements)
+    except Exception as e:
+        print(f"Error: {e}")
+        return ""
+
+
 # Tool: Get artist info (biography/metadata)
 @mcp.tool()
 def get_artist_info(name: str) -> Dict[str, Any]:
